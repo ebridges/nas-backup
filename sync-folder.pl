@@ -4,27 +4,35 @@ use strict;
 use warnings;
 
 use Log::Log4perl qw(get_logger);
+use Config::IniFiles;
 use Email::Sender::Simple qw(sendmail);
 use Email::Sender::Transport::SMTPS;
 use Email::MIME::CreateHTML;
 use Try::Tiny;
 
-use constant LOGGING_CONFIG => 'logging.cnf';
-use constant EXCLUDE_FROM => 'exclude.cnf'; 
-
-use constant MAIL_SUBJ => '';
-use constant MAIL_TO => '';
-use constant MAIL_FROM => '';
-use constant SMTP_HOST => '';
-use constant SMTP_PORT => '';
-use constant SASL_USER => '';
-use constant SASL_PASS => '';
-
 use constant OK => 'OK';
 use constant ERROR => 'ERROR';
 
+use constant LOGGING_CONFIG => 'logging.cnf';
+use constant EXCLUDE_FROM => 'exclude.cnf';
+use constant EMAIL_CONFIG => 'email.cnf';
+
 Log::Log4perl->init(LOGGING_CONFIG);
 my $LOG = get_logger();
+
+my $env = 'DEVELOPMENT';
+if (defined $ENV{NASBACKUP_ENV}) {
+    $env = $ENV{NASBACKUP_ENV};
+}
+
+my $cfg = Config::IniFiles->new( -file => $ini );
+my $MAIL_SUBJ = $cfg->val( $env, 'mail-subject' );
+my $MAIL_TO = $cfg->val( $env, 'mail-to' );
+my $MAIL_FROM = $cfg->val( $env, 'mail-from' );
+my $SMTP_HOST = $cfg->val( $env, 'smtp-hostname' );
+my $SMTP_PORT = $cfg->val( $env, 'smtp-port-num' );
+my $SASL_USER = $cfg->val( $env, 'smtp-username' );
+my $SASL_PASS = $cfg->val( $env, 'smtp-pasword' );
 
 my $source = shift;
 my $dest = shift;
@@ -52,11 +60,11 @@ sub send_changelog {
 
 sub init_mail_transport {
     return Email::Sender::Transport::SMTPS->new(
-        host => SMTP_HOST,
-        port => SMTP_PORT,
+        host => $SMTP_HOST,
+        port => $SMTP_PORT,
         ssl  => 'starttls',
-        sasl_username => SASL_USER,
-        sasl_password => SASL_PASS,
+        sasl_username => $SASL_USER,
+        sasl_password => $SASL_PASS,
         debug => 0, # or 1
     );    
 }
@@ -74,9 +82,9 @@ sub format_message {
 
     return Email::MIME->create_html(
         header => [
-            From    => MAIL_FROM,
-            To      => MAIL_TO,
-            Subject => MAIL_SUBJ,
+            From    => $MAIL_FROM,
+            To      => $MAIL_TO,
+            Subject => $MAIL_SUBJ,
         ],
         body => $body
     );
