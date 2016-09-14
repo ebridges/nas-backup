@@ -107,6 +107,8 @@ sub send_email {
     # Email Header
     print MAIL "To: $to\n";
     print MAIL "From: $from\n";
+    print MAIL "Content-Type: text/html\n";
+    print MAIL "MIME-Version: 1.0\n";
     print MAIL "Subject: $subject\n\n";
     # Email Body
     print MAIL $message;
