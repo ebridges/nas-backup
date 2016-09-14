@@ -10,13 +10,17 @@ use Email::Sender::Transport::SMTPS;
 use Email::MIME::CreateHTML;
 use Try::Tiny;
 
+# set working directory
+chdir '..'
+    or die("Cannot change to parent directory: $!\n");
+
 use constant OK => 'OK';
 use constant ERROR => 'ERROR';
 
-use constant LOGGING_CONFIG => 'logging.cnf';
-use constant EXCLUDE_FROM => 'exclude.cnf';
-use constant EMAIL_CONFIG => 'email.cnf';
-use constant RCLONE_CONFIG => 'rclone-config.cfg';
+use constant LOGGING_CONFIG => 'etc/logging.cnf';
+use constant EXCLUDE_FROM => 'etc/exclude.cnf';
+use constant EMAIL_CONFIG => 'etc/email.cnf';
+use constant RCLONE_CONFIG => 'etc/rclone-config.cfg';
 
 Log::Log4perl->init(LOGGING_CONFIG);
 my $LOG = get_logger();
