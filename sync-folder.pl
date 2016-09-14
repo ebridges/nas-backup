@@ -26,7 +26,7 @@ if (defined $ENV{NASBACKUP_ENV}) {
     $env = $ENV{NASBACKUP_ENV};
 }
 
-my $cfg = Config::IniFiles->new( -file => $ini );
+my $cfg = Config::IniFiles->new( -file => EMAIL_CONFIG );
 
 my $MAIL_SUBJ = $cfg->val( $env, 'mail-subject' );
 my $MAIL_TO = $cfg->val( $env, 'mail-to' );
