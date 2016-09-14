@@ -42,6 +42,7 @@ die_usage()
     unless $source and $dest;
 
 my $changelog = generate_changelog($source, $dest);
+$LOG->debug("changelog with " . scalar(@$changelog) . " entries.");
 my $status = sync_folders($source, $dest);
 send_changelog($changelog, $status);
 
@@ -57,10 +58,12 @@ sub send_changelog {
     } catch {
         $LOG->logdie("Error sending email: $_");
     };
+    $LOG->trace('changelog emailed.')
 }
 
 
 sub init_mail_transport {
+    $LOG->trace("initializing mail transport to <$SMTP_HOST:$SMTP_PORT>");
     return Email::Sender::Transport::SMTPS->new(
         host => $SMTP_HOST,
         port => $SMTP_PORT,
@@ -73,6 +76,7 @@ sub init_mail_transport {
 
 
 sub format_message {
+    $LOG->trace("formatting message to <$MAIL_TO>");
     my $changelog = shift;
     my $status = shift;
     my $color = status_color($status);
@@ -102,9 +106,11 @@ sub status_color {
         
 
 sub generate_changelog {
+    $LOG->trace("generating changelog");
     my $source = shift;
     my $dest = shift;
     my $cmd = sprintf "rclone check '%s' '%s' --config %s --exclude-from %s --quiet 2>&1 1>/dev/null", $source, $dest, RCLONE_CONFIG, EXCLUDE_FROM;
+    $LOG->trace("check command: [$cmd]");
     my @log = `$cmd`;
     chomp @log;
     return \@log;
@@ -114,11 +120,12 @@ sub generate_changelog {
 sub sync_folders {
     my $source = shift;
     my $dest = shift;
-    
+    $LOG->trace("sync source: [$source] to [$dest]");
     my $cmd = sprintf "rclone sync '%s' '%s' --config %s --exclude-from %s --verbose 2>&1 1>/dev/null", $source, $dest, RCLONE_CONFIG, EXCLUDE_FROM;
+    $LOG->trace("sync command: [$cmd]");
     my @log = `$cmd`;
     if ($?) {
-        $LOG->error("Error when sync'ing [$source] to [$dest]: $?");
+        $LOG->error("Error when syncing [$source] to [$dest]: $?");
         return ERROR;
     }
     return OK;
