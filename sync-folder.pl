@@ -106,8 +106,6 @@ sub generate_changelog {
     my $dest = shift;
     my $cmd = sprintf "rclone check '%s' '%s' --config %s --exclude-from %s --quiet 2>&1 1>/dev/null", $source, $dest, RCLONE_CONFIG, EXCLUDE_FROM;
     my @log = `$cmd`;
-#    $LOG->logdie("Error when generating changelog: $?")
-#    if $?;
     chomp @log;
     return \@log;
 }
