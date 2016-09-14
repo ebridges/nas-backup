@@ -4,41 +4,19 @@ use strict;
 use warnings;
 
 use Log::Log4perl qw(get_logger);
-use Config::IniFiles;
-use Email::Sender::Simple qw(sendmail);
-use Email::Sender::Transport::SMTPS;
-use Email::MIME::CreateHTML;
-use Try::Tiny;
-
-# set working directory
-chdir '..'
-    or die("Cannot change to parent directory: $!\n");
 
 use constant OK => 'OK';
 use constant ERROR => 'ERROR';
 
 use constant LOGGING_CONFIG => 'etc/logging.cnf';
 use constant EXCLUDE_FROM => 'etc/exclude.cnf';
-use constant EMAIL_CONFIG => 'etc/email.cnf';
 use constant RCLONE_CONFIG => 'etc/rclone-config.cnf';
+use constant MAIL_SUBJ => 'NAS Backup';
+use constant MAIL_TO => '';
+use constant MAIL_FROM => '';
 
 Log::Log4perl->init(LOGGING_CONFIG);
 my $LOG = get_logger();
-
-my $env = 'DEVELOPMENT';
-if (defined $ENV{NASBACKUP_ENV}) {
-    $env = $ENV{NASBACKUP_ENV};
-}
-
-my $cfg = Config::IniFiles->new( -file => EMAIL_CONFIG );
-
-my $MAIL_SUBJ = $cfg->val( $env, 'mail-subject' );
-my $MAIL_TO = $cfg->val( $env, 'mail-to' );
-my $MAIL_FROM = $cfg->val( $env, 'mail-from' );
-my $SMTP_HOST = $cfg->val( $env, 'smtp-hostname' );
-my $SMTP_PORT = $cfg->val( $env, 'smtp-port-num' );
-my $SASL_USER = $cfg->val( $env, 'smtp-username' );
-my $SASL_PASS = $cfg->val( $env, 'smtp-pasword' );
 
 my $source = shift;
 my $dest = shift;
@@ -59,26 +37,8 @@ sub send_changelog {
     my $src = shift;
     my $des = shift;
     my $message = format_message($changelog, $status, $src, $des);
-    my $transport = init_mail_transport();
-    try {
-        sendmail($message, { transport => $transport });
-    } catch {
-        $LOG->logdie("Error sending email: $_");
-    };
-    $LOG->trace('changelog emailed.')
-}
 
-
-sub init_mail_transport {
-    $LOG->trace("initializing mail transport to <$SMTP_HOST:$SMTP_PORT>");
-    return Email::Sender::Transport::SMTPS->new(
-        host => $SMTP_HOST,
-        port => $SMTP_PORT,
-        ssl  => 'starttls',
-        sasl_username => $SASL_USER,
-        sasl_password => $SASL_PASS,
-        debug => 0, # or 1
-    );    
+    send_email($to, $from, $subject, $message);
 }
 
 
@@ -97,14 +57,7 @@ sub format_message {
     $body .= "<b>Destination:</b> [$des]<br/>\n";
     $body .= "<pre>\n$log</pre>\n";    
 
-    return Email::MIME->create_html(
-        header => [
-            From    => $MAIL_FROM,
-            To      => $MAIL_TO,
-            Subject => $MAIL_SUBJ,
-        ],
-        body => $body
-    );
+    return $body;
 }
 
 
@@ -140,6 +93,26 @@ sub sync_folders {
         return ERROR;
     }
     return OK;
+}
+
+
+sub send_email {
+    my $to = shift;
+    my $from = shift;
+    my $subject = shift;
+    my $message = shift;
+
+    open(MAIL, "|/usr/sbin/sendmail -t");
+     
+    # Email Header
+    print MAIL "To: $to\n";
+    print MAIL "From: $from\n";
+    print MAIL "Subject: $subject\n\n";
+    # Email Body
+    print MAIL $message;
+
+    close(MAIL);
+
 }
 
 

@@ -1,6 +1,1 @@
-Email::Sender
-Email::Sender::Transport::SMTPS
-Try::Tiny
-Email::Simple::Creator
-Email::MIME::CreateHTML
-Config::IniFiles
+Log::Log4perl
