@@ -16,6 +16,7 @@ use constant ERROR => 'ERROR';
 use constant LOGGING_CONFIG => 'logging.cnf';
 use constant EXCLUDE_FROM => 'exclude.cnf';
 use constant EMAIL_CONFIG => 'email.cnf';
+use constant RCLONE_CONFIG => 'rclone-config.cfg';
 
 Log::Log4perl->init(LOGGING_CONFIG);
 my $LOG = get_logger();
@@ -103,7 +104,7 @@ sub status_color {
 sub generate_changelog {
     my $source = shift;
     my $dest = shift;
-    my $cmd = sprintf "rclone check '%s' '%s' --exclude-from %s --quiet 2>&1 1>/dev/null", $source, $dest, EXCLUDE_FROM;
+    my $cmd = sprintf "rclone check '%s' '%s' --config %s --exclude-from %s --quiet 2>&1 1>/dev/null", $source, $dest, RCLONE_CONFIG, EXCLUDE_FROM;
     my @log = `$cmd`;
 #    $LOG->logdie("Error when generating changelog: $?")
 #    if $?;
@@ -116,7 +117,7 @@ sub sync_folders {
     my $source = shift;
     my $dest = shift;
     
-    my $cmd = sprintf "rclone sync '%s' '%s' --exclude-from %s --quiet 2>&1 1>/dev/null", $source, $dest, EXCLUDE_FROM;
+    my $cmd = sprintf "rclone sync '%s' '%s' --config %s --exclude-from %s --verbose 2>&1 1>/dev/null", $source, $dest, RCLONE_CONFIG, EXCLUDE_FROM;
     my @log = `$cmd`;
     if ($?) {
         $LOG->error("Error when sync'ing [$source] to [$dest]: $?");
