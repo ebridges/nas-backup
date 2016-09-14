@@ -20,7 +20,7 @@ use constant ERROR => 'ERROR';
 use constant LOGGING_CONFIG => 'etc/logging.cnf';
 use constant EXCLUDE_FROM => 'etc/exclude.cnf';
 use constant EMAIL_CONFIG => 'etc/email.cnf';
-use constant RCLONE_CONFIG => 'etc/rclone-config.cfg';
+use constant RCLONE_CONFIG => 'etc/rclone-config.cnf';
 
 Log::Log4perl->init(LOGGING_CONFIG);
 my $LOG = get_logger();
