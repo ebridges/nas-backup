@@ -38,12 +38,12 @@ sub send_changelog {
     my $des = shift;
     my $message = format_message($changelog, $status, $src, $des);
 
-    send_email($to, $from, $subject, $message);
+    send_email(MAIL_TO, MAIL_FROM, MAIL_SUBJ, $message);
 }
 
 
 sub format_message {
-    $LOG->trace("formatting message to <$MAIL_TO>");
+    $LOG->trace('formatting message to <'. MAIL_TO . '>');
     my $changelog = shift;
     my $status = shift;
     my $src = shift;
