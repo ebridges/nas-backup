@@ -44,14 +44,17 @@ die_usage()
 my $changelog = generate_changelog($source, $dest);
 $LOG->debug("changelog with " . scalar(@$changelog) . " entries.");
 my $status = sync_folders($source, $dest);
-send_changelog($changelog, $status);
+$LOG->debug("sync completed.");
+send_changelog($changelog, $status, $source, $dest);
 
 
 sub send_changelog {
     $LOG->info("emailing changelog");
     my $changelog = shift;
     my $status = shift;
-    my $message = format_message($changelog, $status);
+    my $src = shift;
+    my $des = shift;
+    my $message = format_message($changelog, $status, $src, $des);
     my $transport = init_mail_transport();
     try {
         sendmail($message, { transport => $transport });
@@ -79,11 +82,15 @@ sub format_message {
     $LOG->trace("formatting message to <$MAIL_TO>");
     my $changelog = shift;
     my $status = shift;
+    my $src = shift;
+    my $des = shift;
     my $color = status_color($status);
     my $cnt = scalar(@$changelog);
     my $log = join "\n", @$changelog;
     my $body = "<b>Status:</b> [<span style='color: $color'>$status</span>]<br/>\n";
     $body .= "<b>File count:</b> [$cnt]<br/>\n";
+    $body .= "<b>Source:</b> [$src]<br/>\n";
+    $body .= "<b>Destination:</b> [$des]<br/>\n";
     $body .= "<pre>\n$log</pre>\n";    
 
     return Email::MIME->create_html(
