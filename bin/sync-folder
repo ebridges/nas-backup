@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Log::Log4perl qw(get_logger);
+use POSIX qw{strftime};
 
 use constant OK => 'OK';
 use constant ERROR => 'ERROR';
@@ -25,18 +26,22 @@ die_usage()
 
 my $changelog = generate_changelog($source, $dest);
 $LOG->debug("changelog with " . scalar(@$changelog) . " entries.");
+
+my $start = time;
 my $status = sync_folders($source, $dest);
+my $elapsed = time - $start;
 $LOG->debug("sync completed.");
-send_changelog($changelog, $status, $source, $dest);
+send_changelog($changelog, $status, $elapsed, $source, $dest);
 
 
 sub send_changelog {
     $LOG->info("emailing changelog");
     my $changelog = shift;
     my $status = shift;
+    my $elapsed = shift;
     my $src = shift;
     my $des = shift;
-    my $message = format_message($changelog, $status, $src, $des);
+    my $message = format_message($changelog, $status, $elapsed, $src, $des);
 
     send_email(MAIL_TO, MAIL_FROM, MAIL_SUBJ, $message);
 }
@@ -46,6 +51,7 @@ sub format_message {
     $LOG->trace('formatting message to <'. MAIL_TO . '>');
     my $changelog = shift;
     my $status = shift;
+    my $elapsed = shift;
     my $src = shift;
     my $des = shift;
     my $color = status_color($status);
@@ -55,6 +61,7 @@ sub format_message {
     $body .= "<b>File count:</b> [$cnt]<br/>\n";
     $body .= "<b>Source:</b> [$src]<br/>\n";
     $body .= "<b>Destination:</b> [$des]<br/>\n";
+    $body .= "<b>Elapsed Time:</b> [". strftime("\%H:\%M:\%S", gmtime($elapsed)) ."]<br/>\n";
     $body .= "<pre>\n$log</pre>\n";    
 
     return $body;
