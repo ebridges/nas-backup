@@ -31,6 +31,7 @@ my $start = time;
 my $status = sync_folders($source, $dest);
 my $elapsed = time - $start;
 $LOG->debug("sync completed.");
+
 send_changelog($changelog, $status, $elapsed, $source, $dest);
 
 
@@ -42,7 +43,6 @@ sub send_changelog {
     my $src = shift;
     my $des = shift;
     my $message = format_message($changelog, $status, $elapsed, $src, $des);
-
     send_email(MAIL_TO, MAIL_FROM, MAIL_SUBJ, $message);
 }
 
@@ -62,8 +62,7 @@ sub format_message {
     $body .= "<b>Source:</b> [$src]<br/>\n";
     $body .= "<b>Destination:</b> [$des]<br/>\n";
     $body .= "<b>Elapsed Time:</b> [". strftime("\%H:\%M:\%S", gmtime($elapsed)) ."]<br/>\n";
-    $body .= "<pre>\n$log</pre>\n";    
-
+    $body .= "<pre>\n$log</pre>\n";
     return $body;
 }
 
@@ -108,20 +107,15 @@ sub send_email {
     my $from = shift;
     my $subject = shift;
     my $message = shift;
-
     open(MAIL, "|/usr/sbin/sendmail -t");
-     
     # Email Header
     print MAIL "To: $to\n";
     print MAIL "From: $from\n";
     print MAIL "Content-Type: text/html\n";
     print MAIL "MIME-Version: 1.0\n";
     print MAIL "Subject: $subject\n\n";
-    # Email Body
     print MAIL $message;
-
     close(MAIL);
-
 }
 
 
