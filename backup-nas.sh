@@ -28,5 +28,5 @@ do
 		BUCKET='multimedia'
 	fi
 	echo "Synchronizing ${ROOT}/${SYNC_PATH} to ${BUCKET}"
-#	$(sync-folder ${ROOT}/${SYNC_PATH} ${BUCKET}:${SYNC_PATH})
+ 	$(sync-folder ${ROOT}/${SYNC_PATH} ${BUCKET}:${SYNC_PATH})
 done
