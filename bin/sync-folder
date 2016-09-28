@@ -79,7 +79,7 @@ sub generate_changelog {
     $LOG->trace("generating changelog");
     my $source = shift;
     my $dest = shift;
-    my $cmd = sprintf "rclone check '%s' '%s' --config %s --exclude-from %s --quiet 2>&1 1>/dev/null", $source, $dest, RCLONE_CONFIG, EXCLUDE_FROM;
+    my $cmd = sprintf "rclone check '%s' '%s' --config %s --exclude-from %s --quiet 2>&1", $source, $dest, RCLONE_CONFIG, EXCLUDE_FROM;
     $LOG->trace("check command: [$cmd]");
     my @log = `$cmd`;
     chomp @log;
@@ -91,9 +91,10 @@ sub sync_folders {
     my $source = shift;
     my $dest = shift;
     $LOG->trace("sync source: [$source] to [$dest]");
-    my $cmd = sprintf "rclone sync '%s' '%s' --config %s --exclude-from %s --verbose 2>&1 1>/dev/null", $source, $dest, RCLONE_CONFIG, EXCLUDE_FROM;
+    my $cmd = sprintf "rclone sync '%s' '%s' --config %s --exclude-from %s --verbose 2>&1", $source, $dest, RCLONE_CONFIG, EXCLUDE_FROM;
     $LOG->trace("sync command: [$cmd]");
     my @log = `$cmd`;
+    $LOG->info(@log);
     if ($?) {
         $LOG->error("Error when syncing [$source] to [$dest]: $?");
         return ERROR;
