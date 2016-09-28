@@ -12,7 +12,7 @@ IFS=$'\n'
 PATHS=($(find ${ROOT} \
 	      -mindepth 2 \
         -maxdepth 2 \
-        -type d | \
+        -type d  2>/dev/null | \
             grep -v 'lost+found' | \
             grep -v 'Network Trash Folder' | \
             grep -v 'Virtual Machines.localized' | \
@@ -23,7 +23,7 @@ PATHS=($(find ${ROOT} \
             grep -v .timemachine | \
             grep -v /c/backup | \
             grep -v /c/home | \
-sort)) 2>/dev/null
+sort))
 
 for p in "${PATHS[@]}"
 do
