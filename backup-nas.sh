@@ -37,5 +37,5 @@ do
   then
     echo "Synchronizing ${ROOT}/${SYNC_PATH} to ${BUCKET}"
   fi
-  $(sync-folder ${ROOT}/${SYNC_PATH} ${BUCKET}:${SYNC_PATH})
+  $(sync-folder "${ROOT}/${SYNC_PATH}" "${BUCKET}:${SYNC_PATH}")
 done
