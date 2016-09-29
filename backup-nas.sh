@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ -e ${HOME}/.profile_cron ];
+then
+  source ${HOME}/.profile_cron
+fi
+
 VERBOSE=
 if [[ ${1} == '-v' ]];
 then
