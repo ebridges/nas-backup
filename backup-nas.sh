@@ -30,17 +30,21 @@ PATHS=($(find ${ROOT} \
             grep -v /c/home | \
 sort))
 
-for p in "${PATHS[@]}"
+for LOCAL_PATH in "${PATHS[@]}"
 do
-  SYNC_PATH=${p#$(dirname "$(dirname "$p")")/}
-  BUCKET='archive'
-  if [[ ${SYNC_PATH} == multimedia* ]] || [[ ${SYNC_PATH} == photos* ]] ;
-  then
-    BUCKET='multimedia'
-  fi
+
+  ## LOCAL_PATH --> '/c/documents/bin'
+  ## TMP --> 'documents/bin'
+  ## REMOTE_PATH --> 'documents:bin'
+
+  TMP=${LOCAL_PATH#$(dirname "$(dirname "$LOCAL_PATH")")/}
+
+  REMOTE_PATH=${TMP/\//:}
+
   if [[ ${VERBOSE} ]];
   then
-    echo "Synchronizing ${ROOT}/${SYNC_PATH} to ${BUCKET}"
+    echo "Synchronizing ${LOCAL_PATH} to ${REMOTE_PATH}
   fi
-  $(sync-folder "${ROOT}/${SYNC_PATH}" "${BUCKET}:${SYNC_PATH}")
+
+  $(sync-folder "${LOCAL_PATH}" "${REMOTE_PATH}")
 done
