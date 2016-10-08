@@ -25,7 +25,7 @@ die_usage()
     unless $source and $dest;
 
 my $changelog = generate_changelog($source, $dest);
-$LOG->debug("changelog with " . scalar(@$changelog) . " entries.");
+$LOG->debug("($source => $dest) changelog has " . scalar(@$changelog) . " entries.");
 
 if(scalar(@$changelog) > 0) {
     my $start = time;
@@ -83,7 +83,7 @@ sub generate_changelog {
     my $source = shift;
     my $dest = shift;
     my $cmd = sprintf "rclone check '%s' '%s' --config %s --exclude-from %s --quiet 2>&1", $source, $dest, RCLONE_CONFIG, EXCLUDE_FROM;
-    $LOG->trace("check command: [$cmd]");
+    $LOG->debug("check command: [$cmd]");
     my @log = `$cmd`;
     chomp @log;
     return \@log;
@@ -93,9 +93,8 @@ sub generate_changelog {
 sub sync_folders {
     my $source = shift;
     my $dest = shift;
-    $LOG->trace("sync source: [$source] to [$dest]");
     my $cmd = sprintf "rclone sync '%s' '%s' --config %s --exclude-from %s --verbose 2>&1", $source, $dest, RCLONE_CONFIG, EXCLUDE_FROM;
-    $LOG->trace("sync command: [$cmd]");
+    $LOG->debug("sync command: [$cmd]");
     my @log = `$cmd`;
     $LOG->info(@log);
     if ($?) {
