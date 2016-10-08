@@ -43,7 +43,7 @@ do
 
   if [[ ${VERBOSE} ]];
   then
-    echo "Synchronizing ${LOCAL_PATH} to ${REMOTE_PATH}
+    echo "Synchronizing ${LOCAL_PATH} to ${REMOTE_PATH}"
   fi
 
   $(sync-folder "${LOCAL_PATH}" "${REMOTE_PATH}")
