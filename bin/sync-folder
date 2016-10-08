@@ -27,12 +27,15 @@ die_usage()
 my $changelog = generate_changelog($source, $dest);
 $LOG->debug("changelog with " . scalar(@$changelog) . " entries.");
 
-my $start = time;
-my $status = sync_folders($source, $dest);
-my $elapsed = time - $start;
-$LOG->debug("sync completed.");
-
-send_changelog($changelog, $status, $elapsed, $source, $dest);
+if(scalar(@$changelog) > 0) {
+    my $start = time;
+    my $status = sync_folders($source, $dest);
+    my $elapsed = time - $start;
+    $LOG->debug("sync completed.");
+    send_changelog($changelog, $status, $elapsed, $source, $dest);
+} else {
+    $LOG->info("skipping sync of $source since nothing has changed.");
+}
 
 
 sub send_changelog {
