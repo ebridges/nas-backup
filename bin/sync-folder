@@ -86,6 +86,7 @@ sub generate_changelog {
     $LOG->debug("check command: [$cmd]");
     my @log = `$cmd`;
     chomp @log;
+    @log = grep { ! ($_ =~ /Failed to check/) } @log;
     return \@log;
 }
 
