@@ -28,6 +28,7 @@ PATHS=($(find ${ROOT} \
             grep -v .timemachine | \
             grep -v /c/backup | \
             grep -v /c/home | \
+            grep -v /c/usr-local | \
 sort))
 
 for LOCAL_PATH in "${PATHS[@]}"
