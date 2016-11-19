@@ -19,10 +19,11 @@ use constant MAIL_FROM => $ENV{NAS_BACKUP_MAIL_FROM};
 Log::Log4perl->init(LOGGING_CONFIG);
 my $LOG = get_logger();
 
+my $config = shift;
 my $source = shift;
 my $dest = shift;
 die_usage()
-    unless $source and $dest;
+    unless $source and $dest and $config;
 
 my $changelog = generate_changelog($source, $dest);
 $LOG->debug("($source => $dest) changelog has " . scalar(@$changelog) . " entries.");
@@ -124,7 +125,7 @@ sub send_email {
 
 
 sub die_usage {
-    my $mesg = "Usage: $0 [source] [destination]\n";
+    my $mesg = "Usage: $0 [config] [source] [destination]\n";
     die $mesg;
 }
 

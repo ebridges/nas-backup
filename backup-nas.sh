@@ -5,10 +5,16 @@ then
   source ${HOME}/.profile_cron
 fi
 
+CONFIG=${1}
 
+if [ -z "${CONFIG}" ];
+  echo "Usage: $0 [path/to/config]"
+  exit 1
+fi
 
-
-
+if [ ! -e "${CONFIG}" ];
+  echo "${CONFIG} not found!"
+  exit 1
 fi
 
 declare -a PATHS
@@ -42,6 +48,5 @@ do
 
   REMOTE_PATH=${TMP/\//:}
 
-
-  $(sync-folder "${LOCAL_PATH}" "${REMOTE_PATH}")
+  $(sync-folder "${CONFIG}" "${LOCAL_PATH}" "${REMOTE_PATH}")
 done
