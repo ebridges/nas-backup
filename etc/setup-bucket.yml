@@ -1,0 +1,43 @@
+---
+- name: configure an s3 bucket for backup
+  hosts: localhost
+  gather_facts: False
+  vars:
+      bucket_root_name: 'cc.roja.backup'
+      backup_buckets:
+        - '{{ bucket_root_name }}.archive'
+        - '{{ bucket_root_name }}.documents'
+        - '{{ bucket_root_name }}.multimedia'
+        - '{{ bucket_root_name }}.photos'
+      user_account: 'nas-backup'
+      user_account_arn: 'arn:aws:iam::169122179348:user/nas-backup'
+      iam_policy_name: 'NASBackupPolicy'
+
+  tasks:
+  - name: Ensure user has policy to allow unrestricted access to backup buckets.
+    iam_policy:
+      iam_type: user
+      iam_name: '{{ user_account }}'
+      policy_name: '{{ iam_policy_name }}'
+      policy_json:
+        Version: '2012-10-17'
+        Statement: 
+          - Effect: Allow
+            Action: ['s3:*'] # ['s3:GetObject']
+            Resource: 'arn:aws:s3:::{{ bucket_root_name }}.*'
+      state: present
+
+  - name: Create buckets for backup
+    s3_bucket:
+      name: '{{ item }}'
+      policy: 
+        Version: '2012-10-17'
+        Statement: 
+          - Sid: AddPerm
+            Effect: Allow
+            Principal: 
+              AWS: '{{ user_account_arn }}'
+            Action: ['s3:*']
+            Resource: ['arn:aws:s3:::{{ item }}']
+    with_items: "{{ backup_buckets }}"
+
