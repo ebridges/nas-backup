@@ -5,10 +5,10 @@ then
   source ${HOME}/.profile_cron
 fi
 
-VERBOSE=
-if [[ ${1} == '-v' ]];
-then
-  VERBOSE='y'
+
+
+
+
 fi
 
 declare -a PATHS
@@ -42,10 +42,6 @@ do
 
   REMOTE_PATH=${TMP/\//:}
 
-  if [[ ${VERBOSE} ]];
-  then
-    echo "Synchronizing ${LOCAL_PATH} to ${REMOTE_PATH}"
-  fi
 
   $(sync-folder "${LOCAL_PATH}" "${REMOTE_PATH}")
 done
