@@ -1,0 +1,40 @@
+/c/archive/archived-email,archive:archived-email
+/c/archive/delve-backups,archive:delve-backups
+/c/archive/dnload,archive:dnload
+/c/archive/Exports,archive:Exports
+/c/archive/nas-dnload,archive:nas-dnload
+/c/archive/svn-backups,archive:svn-backups
+/c/archive/svn-repository,archive:svn-repository
+/c/archive/tinfoil-backup,archive:tinfoil-backup
+/c/archive/websites,archive:websites
+/c/archive/winetrust-backup,archive:winetrust-backup
+/c/archive/zipfiles,archive:zipfiles
+/c/documents/Admin,documents:Admin
+/c/documents/bin,documents:bin
+/c/documents/ewy,documents:ewy
+/c/documents/htdocs,documents:htdocs
+/c/documents/info,documents:info
+/c/documents/notes,documents:notes
+/c/documents/projects,documents:projects
+/c/documents/restore,documents:restore
+/c/documents/school,documents:school
+/c/multimedia/books,multimedia:cc-roja-backup-multimedia/books
+/c/multimedia/iTunes,multimedia:cc-roja-backup-multimedia/iTunes
+/c/multimedia/iTunesMusic,multimedia:cc-roja-backup-multimedia/iTunesMusic
+/c/multimedia/movies,multimedia:cc-roja-backup-multimedia/movies
+/c/multimedia/music,multimedia:cc-roja-backup-multimedia/music
+/c/multimedia/tv-shows,multimedia:cc-roja-backup-multimedia/tv-shows
+/c/multimedia/videos,multimedia:cc-roja-backup-multimedia/videos
+/c/multimedia/working,multimedia:cc-roja-backup-multimedia/working
+/c/photos/19800101,photos:cc-roja-backup-photos/19800101
+/c/photos/2013 - Family Portraits,photos:cc-roja-backup-photos/2013 - Family Portraits
+/c/photos/camera-export-2015-01-27,photos:cc-roja-backup-photos/camera-export-2015-01-27
+/c/photos/Ewa Laptop,photos:cc-roja-backup-photos/Ewa Laptop
+/c/photos/Ewa Phone Photos,photos:cc-roja-backup-photos/Ewa Phone Photos
+/c/photos/incoming,photos:cc-roja-backup-photos/incoming
+/c/photos/misc-pictures,photos:cc-roja-backup-photos/misc-pictures
+/c/photos/photo-books,photos:cc-roja-backup-photos/photo-books
+/c/photos/pictures,photos:cc-roja-backup-photos/pictures
+/c/photos/Pictures of Bartek and Gosia - June 2014,photos:cc-roja-backup-photos/Pictures of Bartek and Gosia - June 2014
+/c/photos/poland 2012,photos:cc-roja-backup-photos/poland 2012
+/c/photos/_unfiled,photos:cc-roja-backup-photos/_unfiled
