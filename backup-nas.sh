@@ -1,52 +1,32 @@
 #!/bin/bash
 
-if [ -e ${HOME}/.profile_cron ];
+if [ -e ${HOME}/.profile_cron ] ;
 then
   source ${HOME}/.profile_cron
 fi
 
 CONFIG=${1}
+FILE_LIST=${2}
 
-if [ -z "${CONFIG}" ];
-  echo "Usage: $0 [path/to/config]"
+if [ -z "${CONFIG}" ] || [ -z "${FILE_LIST}" ] ;
+then
+  echo "Usage: $0 [path/to/config] [path/to/file-list]"
   exit 1
 fi
 
 if [ ! -e "${CONFIG}" ];
+then
   echo "${CONFIG} not found!"
   exit 1
 fi
 
-declare -a PATHS
-ROOT='/c'
-IFS=$'\n'
-PATHS=($(find ${ROOT} \
-        -mindepth 2 \
-        -maxdepth 2 \
-        -type d  2>/dev/null | \
-            grep -v 'lost+found' | \
-            grep -v 'Network Trash Folder' | \
-            grep -v 'Virtual Machines.localized' | \
-            grep -v 'Temporary Items' | \
-            grep -v .TemporaryItems | \
-            grep -v .Apple | \
-            grep -v .iscsi | \
-            grep -v .timemachine | \
-            grep -v /c/backup | \
-            grep -v /c/home | \
-            grep -v /c/usr-local | \
-sort))
+if [ ! -e "${FILE_LIST}" ];
+then
+  echo "${FILE_LIST} not found!"
+  exit 1
+fi
 
-for LOCAL_PATH in "${PATHS[@]}"
+while IFS=, read LOCAL_PATH REMOTE_PATH
 do
-
-  ## LOCAL_PATH --> '/c/documents/bin'
-  ## TMP --> 'documents/bin'
-  ## REMOTE_PATH --> 'documents:bin'
-
-  TMP=${LOCAL_PATH#$(dirname "$(dirname "$LOCAL_PATH")")/}
-
-  REMOTE_PATH=${TMP/\//:}
-
   $(sync-folder "${CONFIG}" "${LOCAL_PATH}" "${REMOTE_PATH}")
-done
+done < ${FILE_LIST}
