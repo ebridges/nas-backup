@@ -25,12 +25,12 @@ my $dest = shift;
 die_usage()
     unless $source and $dest and $config;
 
-my $changelog = generate_changelog($source, $dest);
+my $changelog = generate_changelog($config, $source, $dest);
 $LOG->debug("($source => $dest) changelog has " . scalar(@$changelog) . " entries.");
 
 if(scalar(@$changelog) > 0) {
     my $start = time;
-    my $status = sync_folders($source, $dest);
+    my $status = sync_folders($config, $source, $dest);
     my $elapsed = time - $start;
     $LOG->debug("sync completed.");
     send_changelog($changelog, $status, $elapsed, $source, $dest);
@@ -81,9 +81,10 @@ sub status_color {
 
 sub generate_changelog {
     $LOG->trace("generating changelog");
+    my $config = shift;
     my $source = shift;
     my $dest = shift;
-    my $cmd = sprintf "rclone check '%s' '%s' --config %s --exclude-from %s --quiet 2>&1", $source, $dest, RCLONE_CONFIG, EXCLUDE_FROM;
+    my $cmd = sprintf "rclone check '%s' '%s' --config %s --exclude-from %s --quiet 2>&1", $source, $dest, $config, EXCLUDE_FROM;
     $LOG->debug("check command: [$cmd]");
     my @log = `$cmd`;
     chomp @log;
@@ -93,9 +94,10 @@ sub generate_changelog {
 
 
 sub sync_folders {
+    my $config = shift;
     my $source = shift;
     my $dest = shift;
-    my $cmd = sprintf "rclone sync '%s' '%s' --config %s --exclude-from %s --verbose 2>&1", $source, $dest, RCLONE_CONFIG, EXCLUDE_FROM;
+    my $cmd = sprintf "rclone sync '%s' '%s' --config %s --exclude-from %s --verbose 2>&1", $source, $dest, $config, EXCLUDE_FROM;
     $LOG->debug("sync command: [$cmd]");
     my @log = `$cmd`;
     $LOG->info(@log);
