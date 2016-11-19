@@ -11,7 +11,6 @@ use constant ERROR => 'ERROR';
 
 use constant LOGGING_CONFIG => 'etc/logging.cnf';
 use constant EXCLUDE_FROM => 'etc/exclude.cnf';
-use constant RCLONE_CONFIG => 'etc/rclone-config.cnf';
 use constant MAIL_SUBJ => 'NAS Backup';
 use constant MAIL_TO => $ENV{NAS_BACKUP_MAIL_TO};
 use constant MAIL_FROM => $ENV{NAS_BACKUP_MAIL_FROM};
