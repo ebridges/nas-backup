@@ -32,7 +32,7 @@ if(scalar(@$changelog) > 0) {
     my $status = sync_folders($config, $source, $dest);
     my $elapsed = time - $start;
     $LOG->debug("sync completed.");
-    send_changelog($changelog, $status, $elapsed, $source, $dest);
+    send_changelog($config, $changelog, $status, $elapsed, $source, $dest);
 } else {
     $LOG->info("skipping sync of $source since nothing has changed.");
 }
@@ -40,18 +40,20 @@ if(scalar(@$changelog) > 0) {
 
 sub send_changelog {
     $LOG->info("emailing changelog");
+    my $config = shift;
     my $changelog = shift;
     my $status = shift;
     my $elapsed = shift;
     my $src = shift;
     my $des = shift;
-    my $message = format_message($changelog, $status, $elapsed, $src, $des);
+    my $message = format_message($config, $changelog, $status, $elapsed, $src, $des);
     send_email(MAIL_TO, MAIL_FROM, MAIL_SUBJ, $message);
 }
 
 
 sub format_message {
     $LOG->trace('formatting message to <'. MAIL_TO . '>');
+    my $config = shift;
     my $changelog = shift;
     my $status = shift;
     my $elapsed = shift;
@@ -61,6 +63,7 @@ sub format_message {
     my $cnt = scalar(@$changelog);
     my $log = join "\n", @$changelog;
     my $body = "<b>Status:</b> [<span style='color: $color'>$status</span>]<br/>\n";
+    $body .= "<b>Config:</b> [$config]<br/>\n"
     $body .= "<b>File count:</b> [$cnt]<br/>\n";
     $body .= "<b>Source:</b> [$src]<br/>\n";
     $body .= "<b>Destination:</b> [$des]<br/>\n";
