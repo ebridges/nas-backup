@@ -63,7 +63,7 @@ sub format_message {
     my $cnt = scalar(@$changelog);
     my $log = join "\n", @$changelog;
     my $body = "<b>Status:</b> [<span style='color: $color'>$status</span>]<br/>\n";
-    $body .= "<b>Config:</b> [$config]<br/>\n"
+    $body .= "<b>Config:</b> [$config]<br/>\n";
     $body .= "<b>File count:</b> [$cnt]<br/>\n";
     $body .= "<b>Source:</b> [$src]<br/>\n";
     $body .= "<b>Destination:</b> [$des]<br/>\n";
