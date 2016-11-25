@@ -21,8 +21,11 @@ tar xzf ${FILE}
 echo "[INFO] Disposing downloaded archive."
 rm -f ${FILE}
 PRIOR=`stat -c '%N' ${CURRENT_LINK}`
-echo "[INFO] Removing link to prior version [${PRIOR}]."
-rm ${CURRENT_LINK}
+if [ -e ${CURRENT_LINK} ];
+then
+    echo "[INFO] Removing link to prior version [${PRIOR}]."
+    rm ${CURRENT_LINK}
+fi
 echo "[INFO] Linking to new version ['${CURRENT_LINK}' -> '${REPO}-${VERSION}']"
 ln -s ${REPO}-${VERSION} ${CURRENT_LINK}
 echo "[INFO] Done"
