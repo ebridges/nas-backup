@@ -4,7 +4,7 @@
 
 ```
 $ export PATH=${PATH}:./bin
-$ sync-folder <source> <destination>
+$ sync-folder <rclone-cfg> <source> <destination>
 ```
 
 ### Misc
