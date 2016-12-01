@@ -5,6 +5,7 @@ use warnings;
 
 use Log::Log4perl qw(get_logger);
 use POSIX qw{strftime};
+use File::Path qw(make_path);
 
 use constant OK => 'OK';
 use constant ERROR => 'ERROR';
@@ -24,6 +25,11 @@ my $dest = shift;
 die_usage()
     unless $source and $dest and $config;
 
+if (is_local($dest)) {
+    make_path $dest
+        if not -e $dest;
+}
+
 my $changelog = generate_changelog($config, $source, $dest);
 $LOG->debug("($source => $dest) changelog has " . scalar(@$changelog) . " entries.");
 
@@ -35,6 +41,13 @@ if(scalar(@$changelog) > 0) {
     send_changelog($config, $changelog, $status, $elapsed, $source, $dest);
 } else {
     $LOG->info("skipping sync of $source since nothing has changed.");
+}
+
+#---------------
+
+sub is_local {
+    my $path = shift;
+    return index($path, ':') < 0;
 }
 
 
