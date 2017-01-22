@@ -99,7 +99,7 @@ sub generate_changelog {
     my $config = shift;
     my $source = shift;
     my $dest = shift;
-    my $cmd = sprintf "rclone check '%s' '%s' --config %s --exclude-from %s --quiet 2>&1", $source, $dest, $config, EXCLUDE_FROM;
+    my $cmd = sprintf "rclone check '%s' '%s' --config %s --exclude-from %s --checksum --quiet 2>&1", $source, $dest, $config, EXCLUDE_FROM;
     $LOG->debug("check command: [$cmd]");
     my @log = `$cmd`;
     chomp @log;
@@ -112,7 +112,7 @@ sub sync_folders {
     my $config = shift;
     my $source = shift;
     my $dest = shift;
-    my $cmd = sprintf "rclone sync '%s' '%s' --config %s --exclude-from %s --verbose 2>&1", $source, $dest, $config, EXCLUDE_FROM;
+    my $cmd = sprintf "rclone sync '%s' '%s' --config %s --exclude-from %s --checksum --verbose 2>&1", $source, $dest, $config, EXCLUDE_FROM;
     $LOG->debug("sync command: [$cmd]");
     my @log = `$cmd`;
     $LOG->info(@log);
