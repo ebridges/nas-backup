@@ -12,9 +12,7 @@ use constant ERROR => 'ERROR';
 
 use constant LOGGING_CONFIG => 'etc/logging.cnf';
 use constant EXCLUDE_FROM => 'etc/exclude.cnf';
-use constant MAIL_SUBJ => 'NAS Backup';
-use constant MAIL_TO => $ENV{NAS_BACKUP_MAIL_TO};
-use constant MAIL_FROM => $ENV{NAS_BACKUP_MAIL_FROM};
+use constant WEBHOOK => $ENV{SLACK_WEBHOOK};
 
 Log::Log4perl->init(LOGGING_CONFIG);
 my $LOG = get_logger();
@@ -52,7 +50,7 @@ sub is_local {
 
 
 sub send_changelog {
-    $LOG->info("emailing changelog");
+    $LOG->info("sending changelog");
     my $config = shift;
     my $changelog = shift;
     my $status = shift;
@@ -60,7 +58,7 @@ sub send_changelog {
     my $src = shift;
     my $des = shift;
     my $message = format_message($config, $changelog, $status, $elapsed, $src, $des);
-    send_email(MAIL_TO, MAIL_FROM, MAIL_SUBJ, $message);
+    send_message(WEBHOOK, MAIL_SUBJ, $message);
 }
 
 
@@ -124,20 +122,16 @@ sub sync_folders {
 }
 
 
-sub send_email {
-    my $to = shift;
-    my $from = shift;
+sub send_message {
+    my $webhook = shift;
     my $subject = shift;
     my $message = shift;
-    open(MAIL, "|/usr/sbin/sendmail -t");
-    # Email Header
-    print MAIL "To: $to\n";
-    print MAIL "From: $from\n";
-    print MAIL "Content-Type: text/html\n";
-    print MAIL "MIME-Version: 1.0\n";
-    print MAIL "Subject: $subject\n\n";
-    print MAIL $message;
-    close(MAIL);
+
+    my $m = join "\n", $subject, $message;
+
+    my $result = `curl -X POST -H 'Content-type: application/json' --data-urlencode 'payload={"text":"'.$m.'"}' $webhook`
+
+    $LOG->info("send message result: ".$result);
 }
 
 
