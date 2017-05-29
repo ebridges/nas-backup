@@ -175,7 +175,7 @@ sub send_message {
     my $webhook = shift;
     my $message = shift;
 
-    my $cmd = sprintf "curl -X POST -H 'Content-type: application/json' --data-urlencode 'payload=%s' %s", $message, $webhook;
+    my $cmd = sprintf "curl --silent -X POST -H 'Content-type: application/json' --data '%s' %s", $message, $webhook;
     my $result = `$cmd`;
 
     $LOG->info("send message result: ".$result);
