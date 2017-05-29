@@ -72,7 +72,7 @@ sub format_message {
     my $destination = shift;
     my $status_color = status_color($status);
     my $status_message = status_message($status);
-    my $timestamp = localtime;
+    my $timestamp = time;
     my $file_count = scalar(@$changelog);
     my $log = join "\n", @$changelog;
 
