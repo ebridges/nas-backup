@@ -58,12 +58,12 @@ sub send_changelog {
     my $src = shift;
     my $des = shift;
     my $message = format_message($config, $changelog, $status, $elapsed, $src, $des);
-    send_message(WEBHOOK, MAIL_SUBJ, $message);
+    send_message(WEBHOOK, $message);
 }
 
 
 sub format_message {
-    $LOG->trace('formatting message to <'. MAIL_TO . '>');
+    $LOG->trace('formatting message');
     my $config_file = shift;
     my $changelog = shift;
     my $status = shift;
@@ -171,12 +171,10 @@ sub sync_folders {
 
 sub send_message {
     my $webhook = shift;
-    my $subject = shift;
     my $message = shift;
 
-    my $m = join "\n", $subject, $message;
-
-    my $result = `curl -X POST -H 'Content-type: application/json' --data-urlencode 'payload={"text":"'.$m.'"}' $webhook`
+    my $cmd = sprintf "curl -X POST -H 'Content-type: application/json' --data-urlencode 'payload=%s' %s", $message, $webhook;
+    my $result = `$cmd`;
 
     $LOG->info("send message result: ".$result);
 }
