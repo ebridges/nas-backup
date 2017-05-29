@@ -64,33 +64,80 @@ sub send_changelog {
 
 sub format_message {
     $LOG->trace('formatting message to <'. MAIL_TO . '>');
-    my $config = shift;
+    my $config_file = shift;
     my $changelog = shift;
     my $status = shift;
-    my $elapsed = shift;
-    my $src = shift;
-    my $des = shift;
-    my $color = status_color($status);
-    my $cnt = scalar(@$changelog);
+    my $elapsed_time = strftime("\%H:\%M:\%S", gmtime(shift()));
+    my $source_dir = shift;
+    my $destination = shift;
+    my $status_color = status_color($status);
+    my $status_message = status_message($status);
+    my $timestamp = localtime;
+    my $file_count = scalar(@$changelog);
     my $log = join "\n", @$changelog;
-    my $body = "<b>Status:</b> [<span style='color: $color'>$status</span>]<br/>\n";
-    $body .= "<b>Config:</b> [$config]<br/>\n";
-    $body .= "<b>File count:</b> [$cnt]<br/>\n";
-    $body .= "<b>Source:</b> [$src]<br/>\n";
-    $body .= "<b>Destination:</b> [$des]<br/>\n";
-    $body .= "<b>Elapsed Time:</b> [". strftime("\%H:\%M:\%S", gmtime($elapsed)) ."]<br/>\n";
-    $body .= "<pre>\n$log</pre>\n";
+
+    my $body = qq^{
+            "text": "*NAS backup completed $status_message.*",
+            "attachments": [
+                {
+                    "title": "Result Summary",
+                    "color": "$status_color",
+                    "fields": [
+                        {
+                            "title": "Config",
+                            "value": "$config_file",
+                            "short": false
+                        },
+                        {
+                            "title": "File Count",
+                            "value": "$file_count",
+                            "short": false
+                        },
+                        {
+                            "title": "Source",
+                            "value": "$source_dir",
+                            "short": false
+                        },
+                        {
+                            "title": "Destination",
+                            "value": "$destination",
+                            "short": false
+                        },
+                        {
+                            "title": "Elapsed Time",
+                            "value": "$elapsed_time",
+                            "short": false
+                        }
+                    ],
+                    "footer": "nas-backup",
+                    "ts": $timestamp
+                },
+                {
+                    "title": "Changelog ($file_count records)",
+                    "color": "$status_color",
+                    "text": "```$log```",
+                    "mrkdwn_in": ["text"]
+                }
+            ]
+        }^;
+
     return $body;
 }
 
 
 sub status_color {
     my $s = shift;
-    return 'green'
+    return 'good'
         if $s eq OK;
-    return 'red';
+    return 'danger';
 }
         
+sub status_message {
+    my $s = shift;
+    return 'successfully'
+        if $s eq OK;
+    return 'with errors';
+}
 
 sub generate_changelog {
     $LOG->trace("generating changelog");
