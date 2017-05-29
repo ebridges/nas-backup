@@ -75,6 +75,8 @@ sub format_message {
     my $timestamp = time;
     my $file_count = scalar(@$changelog);
     my $log = join "\n", @$changelog;
+    $log =~ s/"/\\"/g;
+    $log =~ s/\n/\\n/g;
 
     my $body = qq^{
             "text": "*NAS backup completed $status_message.*",
