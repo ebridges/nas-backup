@@ -110,15 +110,15 @@ sub format_message {
                             "value": "$elapsed_time",
                             "short": false
                         }
-                    ],
-                    "footer": "nas-backup",
-                    "ts": $timestamp
+                    ]
                 },
                 {
                     "title": "Changelog ($file_count records)",
                     "color": "$status_color",
                     "text": "```$log```",
-                    "mrkdwn_in": ["text"]
+                    "mrkdwn_in": ["text"],
+                    "footer": "nas-backup",
+                    "ts": $timestamp
                 }
             ]
         }^;
