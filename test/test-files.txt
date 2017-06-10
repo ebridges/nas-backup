@@ -1,0 +1,8 @@
+aaa/111,encrypted-storage:aaa/111
+aaa/222,encrypted-storage:aaa/222
+bbb/111,encrypted-storage:bbb/111
+bbb/222,encrypted-storage:bbb/222
+ccc/111,encrypted-storage:ccc/111
+ccc/222,encrypted-storage:ccc/222
+ddd/111,storage:cc.roja.media/ddd/111
+ddd/222,storage:cc.roja.media/ddd/222
