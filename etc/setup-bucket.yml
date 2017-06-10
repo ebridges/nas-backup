@@ -32,11 +32,3 @@
               ]
       with_dict: "{{ buckets }}"
 
-    - name: Add required folders to media bucket
-      s3:
-          bucket: 'cc.roja.media'
-          object: '{{ item }}'
-          mode: create
-      with_items:
-        - /photos/incoming
-        - /videos/incoming
