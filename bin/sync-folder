@@ -57,12 +57,25 @@ sub send_changelog {
     my $elapsed = shift;
     my $src = shift;
     my $des = shift;
-    my $message = format_message($config, $changelog, $status, $elapsed, $src, $des);
+    my $message;
+    if ($status == OK) {
+       $message = format_success_message($des, $elapsed);
+    } else {
+       $message = format_error_message($config, $changelog, $status, $elapsed, $src, $des); 
+    }
     send_message(WEBHOOK, $message);
 }
 
+sub format_success_message {
+    $LOG->trace('formatting success message');
+    my $destination = shift;
+    my $elapsed_time = strftime("\%H:\%M:\%S", gmtime(shift()));
+    my $timestamp = localtime(time);
+    my $message = "[$timestamp] $destination completed successfully in $elapsed_time";
+    my $body = qq^{"text":"$message"}^;
+}
 
-sub format_message {
+sub format_error_message {
     $LOG->trace('formatting message');
     my $config_file = shift;
     my $changelog = shift;
@@ -79,7 +92,7 @@ sub format_message {
     $log =~ s/\n/\\n/g;
 
     my $body = qq^{
-            "text": "*NAS backup completed $status_message.*",
+            "text": "*NAS backup completed $status_message.* <!everyone>",
             "attachments": [
                 {
                     "title": "Result Summary",
