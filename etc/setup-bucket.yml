@@ -6,6 +6,7 @@
     buckets:
       'cc.roja.backup' : 'arn:aws:s3:::cc.roja.backup'
       'cc.roja.media' : 'arn:aws:s3:::cc.roja.media'
+      'cc.roja.albums' : 'arn:aws:s3:::cc.roja.albums'
     user_account: 'arn:aws:iam::169122179348:user/nas-backup'
 
   tasks:
