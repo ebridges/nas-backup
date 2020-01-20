@@ -58,7 +58,7 @@ sub send_changelog {
     my $src = shift;
     my $des = shift;
     my $message;
-    if ($status == OK) {
+    if ($status eq OK) {
        $message = format_success_message($des, $elapsed);
     } else {
        $message = format_error_message($config, $changelog, $status, $elapsed, $src, $des); 
