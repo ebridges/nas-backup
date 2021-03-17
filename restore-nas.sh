@@ -2,7 +2,7 @@
 
 if [ -e ${HOME}/.profile_cron ] ;
 then
-  source ${HOME}/.profile_cron
+  . ${HOME}/.profile_cron
 fi
 
 CONFIG=${1}
